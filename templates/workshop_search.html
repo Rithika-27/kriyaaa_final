@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Workshop Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/a.css') }}">
+</head>
+<body>
+    <h1>Workshop Details</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        <a href="/workshop_search">Back to Search</a>
+    {% elif workshop %}
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td><strong>Association Name</strong></td>
+                <td>{{ workshop.association_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Workshop Name</strong></td>
+                <td>{{ workshop.workshop_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>{{ workshop.workshop.description }}</td>
+            </tr>
+            <tr>
+                <td><strong>Prerequisites</strong></td>
+                <td>{{ workshop.workshop.prerequisites }}</td>
+            </tr>
+            <tr>
+                <td><strong>Session Count</strong></td>
+                <td>{{ workshop.workshop.session_count }}</td>
+            </tr>
+
+            <!-- Sessions -->
+            <tr>
+                <td><strong>Sessions</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Session No</th>
+                            <th>Session Time</th>
+                            <th>Session Topic</th>
+                            <th>Session Description</th>
+                        </tr>
+                        {% for session in workshop.workshop.sessions %}
+                        <tr>
+                            <td>{{ session.session_no }}</td>
+                            <td>{{ session.session_time }}</td>
+                            <td>{{ session.session_topic }}</td>
+                            <td>{{ session.session_description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+
+            {% if workshop.details %}
+            <tr>
+                <td><strong>Details</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        {% for key, value in workshop.details.items() %}
+                            <tr>
+                                <td>{{ key.replace('_', ' ') | title }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No details available</td>
+            </tr>
+            {% endif %}
+
+            <!-- Form Details -->
+            <tr>
+                <td><strong>Form</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        <!-- Day Field -->
+                        {% set dayMapping = {'day_1': 'Day 1', 'day_2': 'Day 2', 'day_3': 'Day 3', 'two_days': 'Two Days'} %}
+                        {% set selectedDay = [] %}
+                        {% for key, value in dayMapping.items() %}
+                            {% if workshop.form[key] %}
+                                {% set _ = selectedDay.append(value) %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if selectedDay %}
+                        <tr>
+                            <td>Day</td>
+                            <td>{{ selectedDay | join(', ') }}</td>
+                        </tr>
+                        {% endif %}
+
+                        <!-- Additional Fields from the Form -->
+                        {% for key, value in workshop.form.items() %}
+                            {% if value and key not in dayMapping %}
+                            <tr>
+                                <td>{{ key.replace('_', ' ') | title }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Items</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                        </tr>
+                        {% for item in workshop['items'] %}
+                        <tr>
+                            <td>{{ item['item_name'] }}</td>
+                            <td>{{ item['quantity'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+
+        <!-- Download PDF Button -->
+        <form action="/download_pdf1" method="get">
+            <input type="hidden" name="workshop_id" value="{{ workshop.workshop_id }}">
+            <button type="submit" class="button">Download PDF</button>
+        </form>        
+
+        <a href="/workshop_search">Search Again</a>
+    {% else %}
+        <p>No data to display.</p>
+        <a href="/workshop_search">Back to Search</a>
+    {% endif %}
+</body>
+</html>

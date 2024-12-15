@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/presentation_form.css') }}">
+    <title>Event Details Form</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Event Details</h1>
+
+        <form id="eventForm">
+            <!-- Event Description -->
+            <h3>Event Description:</h3>
+            <textarea id="event_description" name="event_description" placeholder="Enter event description"></textarea>
+
+            <!-- Topics and Theme -->
+            <h3>Topics and Theme:</h3>
+            <textarea id="topics_and_theme" name="topics_and_theme" placeholder="Enter topics and theme"></textarea>
+
+            <!-- Event Rules -->
+            <h3>Event Rules (to be uploaded on the website):</h3>
+            <textarea id="event_rules" name="event_rules"
+                placeholder="Mention deadline for ABSTRACT submission by participants in terms of days from start of registrations"></textarea>
+
+            <!-- Number of Rounds -->
+            <h3>Number of Rounds:</h3>
+            <input type="number" id="round_no" placeholder="Enter number of rounds" min="1" />
+
+            <!-- Round-wise Description (Hidden by Default) -->
+            <div id="roundsSection" style="display: none;">
+                <h3>Round-wise Description of the Event:</h3>
+                <table id="roundsTable">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Time</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roundsBody">
+                        <!-- Dynamic round rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="button" onclick="saveToLocalStorage()">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Function to generate round input fields dynamically
+        function generateRounds() {
+            const roundNo = document.getElementById('round_no').value;
+            const roundsBody = document.getElementById('roundsBody');
+            const roundsSection = document.getElementById('roundsSection');
+
+            // Show or hide the rounds section based on valid input
+            if (!roundNo || roundNo <= 0) {
+                roundsBody.innerHTML = ''; // Clear existing rows
+                roundsSection.style.display = 'none';
+                return;
+            }
+
+            // Show the section and generate rows
+            roundsSection.style.display = 'block';
+            roundsBody.innerHTML = ''; // Clear existing rows
+
+            for (let i = 1; i <= roundNo; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td><input type="text" id="round_${i}_time" name="round${i}_time" placeholder="Enter time"></td>
+                    <td><textarea id="round_${i}_description" name="round${i}_description" placeholder="Enter description"></textarea></td>
+                `;
+                roundsBody.appendChild(row);
+            }
+        }
+
+        // Listen for changes in the number of rounds field
+        document.getElementById('round_no').addEventListener('input', generateRounds);
+
+        // Load saved data from localStorage on page load
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('presentationData');
+            if (savedData) {
+                try {
+                    const eventDetails = JSON.parse(savedData);
+
+                    // Repopulate the form fields
+                    document.getElementById('event_description').value = eventDetails.event_description || '';
+                    document.getElementById('topics_and_theme').value = eventDetails.topics_and_theme || '';
+                    document.getElementById('event_rules').value = eventDetails.event_rules || '';
+
+                    // Repopulate the number of rounds
+                    const rounds = eventDetails.rounds || [];
+                    document.getElementById('round_no').value = rounds.length || '';
+                    generateRounds(); // Generate round fields dynamically
+                    rounds.forEach((round, index) => {
+                        const roundIndex = index + 1;
+                        document.getElementById(`round_${roundIndex}_time`).value = round.time || '';
+                        document.getElementById(`round_${roundIndex}_description`).value = round.description || '';
+                    });
+                } catch (e) {
+                    console.error('Error parsing saved data:', e);
+                }
+            }
+        }
+
+        // Save data to localStorage
+        function saveToLocalStorage() {
+            const roundNo = document.getElementById('round_no').value;
+            const rounds = [];
+
+            for (let i = 1; i <= roundNo; i++) {
+                rounds.push({
+                    time: document.getElementById(`round_${i}_time`).value,
+                    description: document.getElementById(`round_${i}_description`).value
+                });
+            }
+
+            const eventDetails = {
+                event_description: document.getElementById('event_description').value,
+                topics_and_theme: document.getElementById('topics_and_theme').value,
+                event_rules: document.getElementById('event_rules').value,
+                rounds: rounds
+            };
+
+            // Save to local storage
+            try {
+                localStorage.setItem('presentationData', JSON.stringify(eventDetails));
+                alert('Event details saved successfully!');
+            } catch (e) {
+                alert('Error saving event details to localStorage.');
+            }
+
+            // Redirect to preview page
+            window.location.href = "/presentation_preview";
+        }
+
+        // Call the function on page load
+        window.onload = loadFromLocalStorage;
+    </script>
+</body>
+
+</html>

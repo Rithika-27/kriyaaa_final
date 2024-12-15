@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Workshop Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/a.css') }}">
+</head>
+
+<body>
+    <h1>Workshop Details</h1>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    <a href="/workshop_search">Back to Search</a>
+    {% elif workshop %}
+    <form action="{{ url_for('save_workshop') }}" method="post">
+        <input type="hidden" name="workshop_id" value="{{ workshop.workshop_id }}">
+
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td><strong>Association Name</strong></td>
+                <td><input type="text" name="association_name" value="{{ workshop.association_name }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>Workshop Name</strong></td>
+                <td><input type="text" name="workshop_name" value="{{ workshop.workshop_name }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td><textarea name="description" required>{{ workshop.workshop.description }}</textarea></td>
+            </tr>
+            <tr>
+                <td><strong>Prerequisites</strong></td>
+                <td><textarea name="prerequisites">{{ workshop.workshop.prerequisites }}</textarea></td>
+            </tr>
+            <tr>
+                <td><strong>Session Count</strong></td>
+                <td><input type="number" name="session_count" value="{{ workshop.workshop.session_count }}" required>
+                </td>
+            </tr>
+
+            {% if workshop.details %}
+            <tr>
+                <td><strong>Details</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        {% for key, value in workshop.details.items() %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td><input type="text" name="details_{{ key }}" value="{{ value }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No details available</td>
+            </tr>
+            {% endif %}
+
+            <!-- Form Details -->
+            <tr>
+                <td><strong>Form</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+
+                        <!-- Day Field Mapping -->
+
+                        <!-- Additional Fields from the Form -->
+                        {% for key, value in workshop.form.items() %}
+                        {% if value and key not in dayMapping %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td><input type="text" name="{{ key }}" value="{{ value }}"></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Save Button -->
+        <button type="submit" class="button">Save</button>
+    </form>
+    {% endif %}
+</body>
+
+</html>

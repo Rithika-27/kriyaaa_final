@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/workshop_info.css') }}">
+</head>
+
+<body>
+    <div class="event-info-form">
+        <h3>Workshop Information</h3>
+        <form id="workshopForm">
+            <div class="form-group">
+                <label for="association-name">Association Name:</label>
+                <input type="text" id="association-name" name="association_name" placeholder="Enter Association Name"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="workshop-name">Workshop Name:</label>
+                <input type="text" id="workshop-name" name="workshop_name" placeholder="Enter Workshop Name" required>
+            </div>
+            <button type="submit" class="btn">Next</button>
+        </form>
+    </div>
+
+    <script>
+        // Access form and input elements
+        const form = document.getElementById("workshopForm");
+        const associationInput = document.getElementById("association-name");
+        const workshopInput = document.getElementById("workshop-name");
+
+        // Save to localStorage and navigate to workshop_instruction page
+        form.addEventListener("submit", (e) => {
+            e.preventDefault(); // Prevent page refresh
+
+            const associationName = associationInput.value.trim();
+            const workshopName = workshopInput.value.trim();
+
+            if (associationName && workshopName) {
+                // Store in localStorage
+                localStorage.setItem("association_name", associationName);
+                localStorage.setItem("workshop_name", workshopName);
+
+                // Redirect to workshop instruction page
+                window.location.href = "./workshop_instruction";
+            } else {
+                alert("Please fill out both fields.");
+            }
+        });
+
+        window.onload = function () {
+            // Check if values exist in localStorage
+            const associationName = localStorage.getItem("association_name");
+            const workshopName = localStorage.getItem("workshop_name");
+
+            // Populate fields if data exists
+            if (associationName) {
+                associationInput.value = associationName;
+            }
+            if (workshopName) {
+                workshopInput.value = workshopName;
+            }
+        };
+    </script>
+</body>
+
+</html>

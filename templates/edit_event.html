@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Event Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
+</head>
+
+<body>
+    <h1>Event Details</h1>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    <a href="/event_search">Back to Search</a>
+    {% elif event %}
+    <form action="/save_event" method="POST">
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td><strong>Association Name</strong></td>
+                <td><input type="text" name="association_name" value="{{ event.association_name }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>Event Name</strong></td>
+                <td><input type="text" name="event_name" value="{{ event.event_name }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>Event ID</strong></td>
+                <td><input type="text" name="event_id" value="{{ event.event_id }}" readonly></td>
+            </tr>
+            <!-- <tr>
+                <td><strong>Event Name</strong></td>
+                <td><input type="text" name="event_name" value="{{ event.event.name }}" required></td>
+            </tr> -->
+            <tr>
+                <td><strong>Tagline</strong></td>
+                <td><input type="text" name="tagline" value="{{ event.event.tagline }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>About</strong></td>
+                <td><textarea name="about" required>{{ event.event.about }}</textarea></td>
+            </tr>
+            <tr>
+                <td><strong>Round Count</strong></td>
+                <td><input type="number" name="round_count" value="{{ event.event.round_count }}" required></td>
+            </tr>
+
+            <!-- Display Details -->
+            <tr>
+                <td><strong>Details</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        {% for key, value in event.details.items() %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td><input type="text" name="details_{{ key }}" value="{{ value }}" required></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Display Form -->
+            <tr>
+                <td><strong>Form</strong><br>(SLOT:Type in the same format<br> e.g., slot1, slot2,
+                    full_day)<br></br>(DAYS:Type
+                    in the
+                    same format<br>
+                    e.g., day_1, day_2, day_3, two_days)</td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        {% set dayMapping = {
+                        'day_1': 'Day 1',
+                        'day_2': 'Day 2',
+                        'day_3': 'Day 3',
+                        'two_days': 'Two Days'
+                        } %}
+
+                        {% set participantTypeMapping = {
+                        'individual': 'Individual',
+                        'team': 'Team'
+                        } %}
+                        {% set slotMapping = {
+                        'slot1': 'Slot 1',
+                        'slot2': 'Slot 2',
+                        'full_day': 'Full Day'
+                        } %}
+
+                        <!-- Day Field -->
+                        {% set selectedDay = [] %}
+                        {% for key, value in dayMapping.items() %}
+                        {% if event.form[key] %}
+                        {% set _ = selectedDay.append(value) %}
+                        {% endif %}
+                        {% endfor %}
+                        {% if selectedDay %}
+                        <tr>
+                            <td>Day</td>
+                            <td>
+                                <input type="text" name="days" value="{{ selectedDay | join(', ') }}">
+                                <p style="font-size: small; color: gray;"></p>
+                            </td>
+                        </tr>
+                        {% endif %}
+
+
+
+                        <!-- Slot Field -->
+                        {% set selectedSlot = [] %}
+                        {% for key, value in slotMapping.items() %}
+                        {% if event.form[key] %}
+                        {% set _ = selectedSlot.append(value) %}
+                        {% endif %}
+                        {% endfor %}
+                        {% if selectedSlot %}
+                        <tr>
+                            <td>Slot</td>
+                            <td>
+                                <input type="text" name="slot" value="{{ selectedSlot | join(', ') }}">
+                                <p style="font-size: small; color: gray;"></p>
+                            </td>
+                        </tr>
+                        {% endif %}
+
+                        <!-- Remaining Form Data -->
+                        {% for key, value in event.form.items() %}
+                        {% if value and key not in dayMapping and key not in eventTypeMapping and key not in
+                        participantTypeMapping and key not in slotMapping %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td><input type="text" name="form_{{ key }}" value="{{ value }}"></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Save Button -->
+        <button type="submit" class="button">Save</button>
+    </form>
+    {% else %}
+    <p>No event found.</p>
+    {% endif %}
+</body>
+
+</html>

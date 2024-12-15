@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Form Instructions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/presentation_instruction.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Instructions to be Read Before Filling the Form</h1>
+
+        <!-- Updated Important Box -->
+        <div class="important-box">
+            <p><span class="important">Important:</span></p>
+            <ul>
+                <li>If two different presentations are to be conducted, then fill the above form for each presentation
+                    separately and submit it.</li>
+                <li>If the same presentation continues on both the days (i.e., Preliminary round on the first day and
+                    final round on the second day), then fill the needed requirements in the same form.</li>
+            </ul>
+        </div>
+
+        <div class="instructions-list">
+            <h3>Instructions:</h3>
+            <div class="instructions-item">
+                <p>Not all the presentations and workshops submitted will be approved.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Maximum of two presentations, one workshop, and one paper presentation can be proposed.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Presentations and workshops should be innovative or based on the trending new technologies relating
+                    to the respective stream.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Judges must be present throughout the duration of the presentation.</p>
+            </div>
+            <div class="instructions-item">
+                <p>No cash prize, memento, or any other form of prizes should be given by clubs/associations to the
+                    presentation winners.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Memento for the external chief guest will be provided by the Students Union if filled in the items
+                    required table.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Certificates to the winners, runners, convenors, and volunteers of each presentation will be provided
+                    by the Students Union.</p>
+            </div>
+            <div class="instructions-item">
+                <p>If any materials are required prior to the day of the presentation, please mention "Required in
+                    advance" near that material in the "Item Name" column.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Halls will be allotted based on availability.</p>
+            </div>
+            <div class="instructions-item">
+                <p>The projector will not be provided by the Students Union. Use the projector available in the hall.
+                </p>
+            </div>
+            <div class="instructions-item">
+                <p>Winner and runner details should be submitted within one hour from the end of the presentation.</p>
+            </div>
+            <div class="instructions-item">
+                <p>HDMI cables/VGA converter will not be provided.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Take enough copies of the form for your reference.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Further changes are not accepted.</p>
+            </div>
+            <div class="instructions-item">
+                <p>Submit it to the point of contact allotted to your club/association.</p>
+            </div>
+            <div class="instructions-item">
+                <p>For more details, contact your respective point of contact.</p>
+            </div>
+        </div>
+
+        <div class="agree-section">
+            <input type="checkbox" id="agreeCheckbox" class="agree-checkbox">
+            <label for="agreeCheckbox">I agree to the terms and conditions</label>
+        </div>
+
+        <div class="proceed-button-section">
+            <button id="nextButton" class="next-button" onclick="navigateToPresentationPage()" disabled>Proceed</button>
+        </div>
+
+        <div class="footer">
+            <p>For any clarifications, feel free to <a href="mailto:contact@studentsunion.com">Contact the Students
+                    Union</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        // Enable the "Proceed to Presentation Page" button when the checkbox is checked
+        const agreeCheckbox = document.getElementById('agreeCheckbox');
+        const nextButton = document.getElementById('nextButton');
+
+        agreeCheckbox.addEventListener('change', function () {
+            if (agreeCheckbox.checked) {
+                nextButton.disabled = false;
+            } else {
+                nextButton.disabled = true;
+            }
+        });
+
+        // Function to navigate to the presentation details page in Flask
+        function navigateToPresentationPage() {
+            window.location.href = "{{ url_for('presentation_detail') }}";
+        }
+    </script>
+
+</body>
+
+</html>

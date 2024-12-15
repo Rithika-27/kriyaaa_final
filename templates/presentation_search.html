@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Presentation Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
+</head>
+<body>
+    <h1>Presentation Details</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        <a href="/presentation_search">Back to Search</a>
+    {% elif presentation %}
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+
+            <!-- Association and Presentation Details -->
+            <tr>
+                <td><strong>Association Name</strong></td>
+                <td>{{ presentation.association_name if presentation.association_name else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Presentation Name</strong></td>
+                <td>{{ presentation.presentation_name if presentation.presentation_name else 'N/A' }}</td>
+            </tr>
+
+            <!-- Details Section -->
+            <tr>
+                <td><strong>Details</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        {% for key, value in presentation.details.items() %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Presentation Information -->
+            <tr>
+                <td><strong>Event Description</strong></td>
+                <td>{{ presentation.presentation.event_description }}</td>
+            </tr>
+            <tr>
+                <td><strong>Topics and Theme</strong></td>
+                <td>{{ presentation.presentation.topics_and_theme }}</td>
+            </tr>
+            <tr>
+                <td><strong>Event Rules</strong></td>
+                <td>{{ presentation.presentation.event_rules }}</td>
+            </tr>
+
+            <!-- Rounds Section -->
+            <tr>
+                <td><strong>Rounds</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Time</th>
+                            <th>Description</th>
+                        </tr>
+                        {% for round in presentation.presentation.rounds %}
+                        <tr>
+                            <td>{{ round.time }}</td>
+                            <td>{{ round.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Form Details -->
+            <tr>
+                <td><strong>Form Details</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+
+                        <!-- Specific Day Field -->
+                        {% set dayMapping = {'day_1': 'Day 1', 'day_2': 'Day 2', 'day_3': 'Day 3', 'two_days': 'Two Days'} %}
+                        {% set selectedDay = dayMapping.get(presentation.form.day, 'N/A') %}
+                        <tr>
+                            <td>Day</td>
+                            <td>{{ selectedDay }}</td>
+                        </tr>
+
+                        <!-- Additional Form Fields -->
+                        {% for key, value in presentation.form.items() %}
+                            {% if key != 'day' %}
+                            <tr>
+                                <td>{{ key.replace('_', ' ') | title }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Download PDF Button -->
+        <form action="/download_pdf2" method="get">
+            <input type="hidden" name="presentation_id" value="{{ presentation.presentation_id }}">
+            <button type="submit" class="button">Download PDF</button>
+        </form>
+
+        <a href="/presentation_search">Search Again</a>
+    {% else %}
+        <p>No data to display.</p>
+        <a href="/presentation_search">Back to Search</a>
+    {% endif %}
+</body>
+</html>

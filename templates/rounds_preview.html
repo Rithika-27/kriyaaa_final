@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Description</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #000;
+            background-color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .content {
+            white-space: pre-line;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .inline-section {
+            display: flex;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .inline-section .label {
+            font-weight: bold;
+            width: 150px;
+        }
+
+        .inline-section .value {
+            flex: 1;
+        }
+
+        .round-section {
+            margin-top: 20px;
+        }
+
+        .signature {
+            margin-top: 40px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: larger;
+            font-weight: bold;
+            display: block;
+            /* Stack elements vertically */
+            text-align: left;
+            /* Align text to the left */
+        }
+
+        .signature div {
+            width: auto;
+            /* Adjust width to fit text */
+        }
+
+        .signature .sign {
+            margin-top: -20px;
+            /* Adjust spacing for alignment */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>EVENT DESCRIPTION</h1>
+
+    <!-- Event Name Section -->
+    <div class="inline-section">
+        <span class="label">EVENT NAME:</span>
+        <span class="value">{{ event_rounds.name }}</span>
+    </div>
+
+    <!-- Tagline Section -->
+    <div class="section">
+        <span class="label">ONE LINE DESCRIPTION (TAG LINE):</span>
+        <span class="value">{{ event_rounds.tagline }}</span>
+    </div>
+
+    <!-- About the Event Section -->
+    <div class="section">
+        <span class="label">ABOUT THE EVENT:</span>
+        <div class="content">{{ event_rounds.about }}</div>
+    </div>
+
+    <!-- Rounds -->
+    {% for round in event_rounds.rounds %}
+    <div class="round-section">
+        <h2>ROUND - {{ loop.index }}</h2>
+
+        <div class="inline-section">
+            <span class="label">NAME:</span>
+            <span class="value">{{ round.round_name }}</span>
+        </div>
+
+        <div class="section">
+            <span class="label">DESCRIPTION:</span>
+            <div class="content">{{ round.round_description }}</div>
+        </div>
+
+        <div class="inline-section">
+            <span class="label">ROUND RULES:</span>
+            <div class="content" style="white-space: pre-line;">{{ round.round_rules}}</div>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="signature">
+        <div>Signature of the Secretary</div>
+        <div class="sign">Signature of the Faculty Advisor</div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm_ws.css') }}">
+    <title>Submission Confirmation</title>
+</head>
+
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-message">
+            <p>{{ messages[0] }}</p>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h1>Workshop Submission Successful!</h1>
+        <p>Your Workshop Approval Form has been successfully submitted.</p>
+
+        <p><strong class="event-id">Generated workshop ID: {{ workshop_id }}</strong></p>
+
+        <!-- Preview PDF button -->
+        <a href="{{ url_for('view_preview_ws') }}" class="button">Download PDF</a>
+
+        <!-- Other buttons -->
+    </div>
+
+    <script>
+        window.onload = function () {
+            localStorage.clear();
+            console.log('LocalStorage has been cleared after event ID retrieval.');
+        };
+    </script>
+</body>
+
+</html>

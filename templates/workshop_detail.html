@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/workshop_details.css') }}">
+    <title>Workshop Details Page</title>
+    <script>
+        // Function to save workshop details in localStorage
+        function saveWorkshopDetails() {
+            const form = document.getElementById('workshopDetailsForm');
+            const formData = new FormData(form);
+            const workshopDetails = {};
+
+            // Collect form data and create an object
+            formData.forEach((value, key) => {
+                workshopDetails[key] = value;
+            });
+
+            // Save workshop details to localStorage
+            try {
+                localStorage.setItem('workshopDetails', JSON.stringify(workshopDetails));
+                alert('Workshop details saved successfully!');
+            } catch (e) {
+                alert('Error saving workshop details to localStorage.');
+            }
+
+            // Navigate to the next page (workshop.html)
+            window.location.href = './workshop';
+        }
+        window.onload = function () {
+            const storedWorkshopDetails = localStorage.getItem("workshopDetails");
+
+            if (storedWorkshopDetails) {
+                const workshopDetails = JSON.parse(storedWorkshopDetails);
+
+                // Populate all input fields
+                const form = document.getElementById("workshopDetailsForm");
+                for (const [key, value] of Object.entries(workshopDetails)) {
+                    const input = form.querySelector([name = "${key}"]);
+                    if (input) {
+                        input.value = value;
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Workshop Details</h1>
+        <form id="workshopDetailsForm" onsubmit="event.preventDefault(); saveWorkshopDetails();">
+            <!-- Secretary Details -->
+            <h3>Secretary Details:</h3>
+            <table>
+                <tr>
+                    <th>Name (Secretary 1)</th>
+                    <td><input type="text" name="secretary1_name" required></td>
+                </tr>
+                <tr>
+                    <th>Roll Number</th>
+                    <td><input type="text" name="secretary1_roll_number" required></td>
+                </tr>
+                <tr>
+                    <th>Mobile No</th>
+                    <td><input type="text" name="secretary1_mobile" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+                <tr>
+                    <th>Name (Secretary 2)</th>
+                    <td><input type="text" name="secretary2_name" required></td>
+                </tr>
+                <tr>
+                    <th>Roll Number</th>
+                    <td><input type="text" name="secretary2_roll_number" required></td>
+                </tr>
+                <tr>
+                    <th>Mobile No</th>
+                    <td><input type="text" name="secretary2_mobile" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+            </table>
+
+            <!-- Convenor Details -->
+            <h3>Convenor Details:</h3>
+            <table>
+                <tr>
+                    <th>Name (Convenor 1)</th>
+                    <td><input type="text" name="convenor1_name" required></td>
+                </tr>
+                <tr>
+                    <th>Roll Number</th>
+                    <td><input type="text" name="convenor1_roll_number" required></td>
+                </tr>
+                <tr>
+                    <th>Mobile No</th>
+                    <td><input type="text" name="convenor1_mobile" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required>
+                    </td>></td>
+                </tr>
+                <tr>
+                    <th>Name (Convenor 2)</th>
+                    <td><input type="text" name="convenor2_name" required></td>
+                </tr>
+                <tr>
+                    <th>Roll Number</th>
+                    <td><input type="text" name="convenor2_roll_number" required></td>
+                </tr>
+                <tr>
+                    <th>Mobile No</th>
+                    <td><input type="text" name="convenor2_mobile" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+            </table>
+
+            <!-- Volunteer Details -->
+            <h3>Volunteer Details:</h3>
+            <table>
+                <tr>
+                    <th>Name (Volunteer 1)</th>
+                    <td><input type="text" name="volunteer1_name" required></td>
+                </tr>
+                <tr>
+                    <th>Roll Number</th>
+                    <td><input type="text" name="volunteer1_roll_number" required></td>
+                </tr>
+                <tr>
+                    <th>Mobile No</th>
+                    <td><input type="text" name="volunteer1_mobile" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+                <tr>
+                    <th>Name (Volunteer 2)</th>
+                    <td><input type="text" name="volunteer2_name" required></td>
+                </tr>
+                <tr>
+                    <th>Roll Number</th>
+                    <td><input type="text" name="volunteer2_roll_number" required></td>
+                </tr>
+                <tr>
+                    <th>Mobile No</th>
+                    <td><input type="text" name="volunteer2_mobile" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+            </table>
+
+            <!-- Faculty Advisor Details -->
+            <h3>Faculty Advisor Details:</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <td><input type="text" name="faculty_advisor_name" required></td>
+                </tr>
+                <tr>
+                    <th>Designation</th>
+                    <td><input type="text" name="faculty_advisor_designation" required></td>
+                </tr>
+                <tr>
+                    <th>Contact Details</th>
+                    <td><input type="text" name="faculty_advisor_contact" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+            </table>
+
+            <!-- Judge Details -->
+            <h3>Speaker Details:</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <td><input type="text" name="speaker_name" required></td>
+                </tr>
+                <tr>
+                    <th>Designation</th>
+                    <td><input type="text" name="speaker_designation" required></td>
+                </tr>
+                <tr>
+                    <th>Contact Details</th>
+                    <td><input type="text" name="speaker_contact" pattern="\d{10}"
+                            title="Please enter a 10-digit mobile number." required></td>
+                </tr>
+            </table>
+
+            <button type="submit" class="next-btn">Next</button>
+        </form>
+    </div>
+</body>
+
+</html>

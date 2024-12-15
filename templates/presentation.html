@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/presentation.css') }}">
+    <title>Event Details Form</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const numericInputs = document.querySelectorAll('input[type="number"]');
+            const hallsRequiredInput = document.querySelector('input[name="halls_required"]');
+            const hallsReasonInput = document.querySelector('input[name="hall_reason"]');
+
+            // Prevent negative numbers in numeric inputs
+            numericInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.value < 0) {
+                        input.value = '';
+                        alert('Negative values are not allowed.');
+                    }
+                });
+            });
+
+            // Enable or disable "Reason for Halls" field based on the number of halls required
+            hallsRequiredInput.addEventListener('input', () => {
+                hallsReasonInput.disabled = !(parseInt(hallsRequiredInput.value) > 1);
+            });
+
+            // Form submission handler
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const formData = {};
+                const inputs = document.querySelectorAll('input[name], textarea[name]');
+                inputs.forEach(input => {
+                    if (input.type === 'radio') {
+                        if (input.checked) formData[input.name] = input.value;
+                    } else if (input.type === 'checkbox') {
+                        formData[input.name] = input.checked;
+                    } else {
+                        formData[input.name] = input.value.trim();
+                    }
+                });
+
+                // Validation for Halls > 1 reason
+                if (parseInt(formData['halls_required']) > 1 && !formData['hall_reason']) {
+                    alert('Please provide a reason for requiring multiple halls.');
+                    return;
+                }
+
+                // Save the form data to localStorage
+                localStorage.setItem('presentationFormData', JSON.stringify(formData));
+                alert('Form submitted successfully!');
+                window.location.href = './presentation_form'; // Adjust as needed
+            });
+
+            // Load saved data from localStorage
+            const storedData = JSON.parse(localStorage.getItem('presentationFormData'));
+            if (storedData) {
+                Object.keys(storedData).forEach(key => {
+                    const element = document.querySelector([name = "${key}"]);
+                    if (element) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            element.checked = storedData[key];
+                        } else {
+                            element.value = storedData[key];
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Presentation Details Form</h1>
+        <form>
+            <table>
+                <!-- Day Selection -->
+                <tr>
+                    <th>Day 2</th>
+                    <th>Day 3</th>
+                    <th colspan="2">Both Days</th>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="day" value="day_2" required> Day 2</td>
+                    <td><input type="radio" name="day" value="day_3" required> Day 3</td>
+                    <td colspan="2"><input type="radio" name="day" value="both_days" required> Both Days</td>
+                </tr>
+
+                <!-- Expected Number of Participants -->
+                <tr>
+                    <th colspan="4">Expected No. of Participants</th>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="number" name="expected_participants"
+                            placeholder="Enter number of participants" required></td>
+                </tr>
+
+                <!-- Team Size -->
+                <tr>
+                    <th colspan="4">Team Size</th>
+                </tr>
+                <tr>
+                    <td>Min:</td>
+                    <td><input type="number" name="team_size_min" placeholder="Min" required></td>
+                    <td>Max:</td>
+                    <td><input type="number" name="team_size_max" placeholder="Max" required></td>
+                </tr>
+
+                <!-- Halls Required -->
+                <tr>
+                    <th>Halls Required</th>
+                    <td colspan="3"><input type="number" name="halls_required" placeholder="Specify halls required"
+                            required></td>
+                </tr>
+                <tr>
+                    <th>Preferred Halls</th>
+                    <td colspan="3"><input type="text" name="preferred_halls" placeholder="Specify preferred halls"
+                            required></td>
+                </tr>
+                <tr>
+                    <th>Reason for Preferred Halls</th>
+                    <td colspan="3"><input type="text" name="hall_reason"
+                            placeholder="Specify reason for preferred halls" required></td>
+                </tr>
+
+                <!-- Duration of Event -->
+                <tr>
+                    <th colspan="4">Duration of the Event in Hours</th>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="number" name="duration" placeholder="Enter event duration in hours"
+                            required></td>
+                </tr>
+
+                <!-- Start to End Time -->
+                <tr>
+                    <th colspan="4">Start to End Time</th>
+                </tr>
+                <tr>
+                    <td colspan="2">SLOT 1 : 9:30 TO 12:30</td>
+                    <td colspan="2"><input type="radio" name="time_slot" value="slot_1" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2">SLOT 2 : 1:30 TO 4:30</td>
+                    <td colspan="2"><input type="radio" name="time_slot" value="slot_2" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2">FULL DAY</td>
+                    <td colspan="2"><input type="radio" name="time_slot" value="full_day" required></td>
+                </tr>
+
+                <!-- Extension Box -->
+                <tr>
+                    <th colspan="4">No of Extension Boxes</th>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="number" name="extension_boxes"
+                            placeholder="Enter number of extension boxes" required></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="text" name="extension_box_reason" placeholder="Justify the reason"
+                            required></td>
+                </tr>
+
+                <!-- Submit Button -->
+                <tr>
+                    <td colspan="4"><button type="submit">Save Event Details</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+
+
+</html>

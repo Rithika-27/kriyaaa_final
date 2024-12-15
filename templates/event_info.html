@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/event_info.css') }}">
+
+</head>
+
+<body>
+    <div class="event-info-form">
+        <h3>Event Information</h3>
+        <form id="eventForm">
+            <div class="form-group">
+                <label for="association-name">Association Name:</label>
+                <input type="text" id="association-name" name="association_name" placeholder="Enter Association Name"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="event-name">Event Name:</label>
+                <input type="text" id="event-name" name="event_name" placeholder="Enter Event Name" required>
+            </div>
+            <button type="submit" class="btn">Next</button>
+        </form>
+    </div>
+
+    <script>
+        // Access form and input elements
+        const form = document.getElementById("eventForm");
+        const associationInput = document.getElementById("association-name");
+        const eventInput = document.getElementById("event-name");
+
+        // Save to localStorage and navigate to event_details page
+        form.addEventListener("submit", (e) => {
+            e.preventDefault(); // Prevent page refresh
+
+            const associationName = associationInput.value.trim();
+            const eventName = eventInput.value.trim();
+
+            if (associationName && eventName) {
+                // Store in localStorage
+                localStorage.setItem("association_name", associationName);
+                localStorage.setItem("event_name", eventName);
+
+                // Redirect to event_details page
+                window.location.href = "./event_instructions";
+            } else {
+                alert("Please fill out both fields.");
+            }
+        });
+        window.onload = function () {
+            // Check if values exist in localStorage
+            const associationName = localStorage.getItem("association_name");
+            const eventName = localStorage.getItem("event_name");
+
+            // Populate fields if data exists
+            if (associationName) {
+                document.getElementById("association_name").value = association_name;
+            }
+            if (eventName) {
+                document.getElementById("event_name").value = event_name;
+            }
+        };
+    </script>
+</body>
+
+</html>

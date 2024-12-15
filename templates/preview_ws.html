@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/a.css') }}">
+    <title>Workshop Preview Page</title>
+    <style>
+        .edit-btn {
+            float: right;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+    </style>
+    <script>
+        function formatKey(key) {
+            return key
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        function loadPreviewData() {
+            // localStorage.clear();
+
+            const workshopDetails = JSON.parse(localStorage.getItem('workshopDetails'));
+            const workshopData = JSON.parse(localStorage.getItem('workshopData'));
+            const workshopItems = JSON.parse(localStorage.getItem('workshopItems'));
+            const workshopFormData = JSON.parse(localStorage.getItem('workshopFormData'));
+            const associationName = localStorage.getItem('association_name');
+            const workshopName = localStorage.getItem('workshop_name');
+
+            // Display association_name and workshop_name
+            const associationContainer = document.getElementById('associationName');
+            const workshopNameContainer = document.getElementById('workshopName');
+            associationContainer.innerHTML = associationName
+                ? `<h2>Association Name:</h2><p>${associationName}</p>`
+                : '<p>No association name found.</p>';
+            workshopNameContainer.innerHTML = workshopName
+                ? `<h2>Workshop Name:</h2><p>${workshopName}</p>`
+                : '<p>No workshop name found.</p>';
+
+            // Workshop Details
+            if (workshopDetails && Object.values(workshopDetails).some(value => value)) {
+                const workshopDetailsContainer = document.getElementById('workshopDetails');
+                let workshopDetailsHTML = `
+                    <h2>Workshop Details:</h2>
+                    <button class="edit-btn" onclick="location.href='{{ url_for('workshop_detail') }}'">Edit</button>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                Object.entries(workshopDetails).forEach(([key, value]) => {
+                    if (Array.isArray(value)) {
+                        let roundsHTML = '<ul>';
+                        value.forEach(round => {
+                            roundsHTML += `<li>${Object.entries(round).map(([k, v]) => `<strong>${formatKey(k)}:</strong> ${v}`).join('<br>')}</li>`;
+                        });
+                        roundsHTML += '</ul>';
+                        workshopDetailsHTML += ` 
+                            <tr>
+                                <td>${formatKey(key)}</td>
+                                <td>${roundsHTML}</td>
+                            </tr>
+                        `;
+                    } else if (value) {
+                        workshopDetailsHTML += `
+                            <tr>
+                                <td>${formatKey(key)}</td>
+                                <td>${value}</td>
+                            </tr>
+                        `;
+                    }
+                });
+                workshopDetailsHTML += `
+                        </tbody>
+                    </table>
+                `;
+                workshopDetailsContainer.innerHTML = workshopDetailsHTML;
+            } else {
+                document.getElementById('workshopDetails').innerHTML = '<p>No workshop details found.</p>';
+            }
+
+            // Workshop Data
+            if (workshopData && Object.values(workshopData).some(value => value)) {
+                const workshopDataContainer = document.getElementById('workshopData');
+                let workshopDataHTML = `
+            <h2>Workshop Data:</h2>
+            <button class="edit-btn" onclick="location.href='{{ url_for('workshop_summary') }}'">Edit</button>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+                Object.entries(workshopData).forEach(([key, value]) => {
+                    if (key !== 'sessions' && value) {
+                        workshopDataHTML += `
+                    <tr>
+                        <td>${formatKey(key)}</td>
+                        <td>${value}</td>
+                    </tr>
+                `;
+                    }
+                });
+                workshopDataHTML += `
+                </tbody>
+            </table>
+        `;
+
+                // Rounds Details
+                if (workshopData.sessions && workshopData.sessions.length > 0) {
+                    workshopDataHTML += '<h2>Sessions Details:</h2>';
+                    workshopData.sessions.forEach((session, index) => {
+                        workshopDataHTML += `
+                    <h3>Session ${index + 1}</h3>
+                    <table border="1">
+                        <tbody>
+                            <tr>
+                                <td>Session No</td>
+                                <td>${session.session_no || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td>Session Time</td>
+                                <td>${session.session_time || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td>Session Topic</td>
+                                <td>${session.session_topic || 'N/A'}</td>
+                            </tr>
+                             <tr>
+                                <td>Session Description</td>
+                                <td>${session.session_description || 'N/A'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+                    });
+                } else {
+                    workshopDataHTML += '<p>No rounds found.</p>';
+                }
+                workshopDataContainer.innerHTML = workshopDataHTML;
+            } else {
+                document.getElementById('workshopData').innerHTML = '<p>No workshop data found.</p>';
+            }
+
+            // Workshop Items
+            if (workshopItems && workshopItems.some(item => item.sno && item.item_name && item.quantity && item.price_per_unit && item.total_price)) {
+                const workshopItemsContainer = document.getElementById('workshopItems');
+                let itemsTableHTML = `
+                    <h2>workshop Items:</h2>
+                    <button class="edit-btn" onclick="location.href='{{ url_for('items_ws') }}'">Edit</button>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>S.NO.</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price per Unit</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                workshopItems.forEach(item => {
+                    if (item.sno && item.item_name && item.quantity && item.price_per_unit && item.total_price) {
+                        itemsTableHTML += `
+                            <tr>
+                                <td>${item.sno}</td>
+                                <td>${item.item_name}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.price_per_unit}</td>
+                                <td>${item.total_price}</td>
+                            </tr>
+                        `;
+                    }
+                });
+                itemsTableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                workshopItemsContainer.innerHTML = itemsTableHTML;
+            } else {
+                document.getElementById('workshopItems').innerHTML = '<p>No event items found.</p>';
+            }
+
+            // Workshop Form Data
+            if (workshopFormData && Object.values(workshopFormData).some(value => value)) {
+                const workshopFormDataContainer = document.getElementById('workshopFormData');
+                let formDataHTML = `
+        <h2>Workshop Form Data:</h2>
+        <button class="edit-btn" onclick="location.href='{{ url_for('workshop_page') }}'">Edit</button>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+                // Extract the 'day' field
+                const dayMapping = {
+                    day_1: "Day 1",
+                    day_2: "Day 2",
+                    day_3: "Day 3",
+                    two_days: "Two Days"
+                };
+                const selectedDay = Object.entries(dayMapping)
+                    .filter(([key]) => workshopFormData[key])
+                    .map(([, value]) => value)
+                    .join(', ');
+
+                if (selectedDay) {
+                    formDataHTML += `
+            <tr>
+                <td>Day</td>
+                <td>${selectedDay}</td>
+            </tr>
+        `;
+                }
+
+                // Extract the 'workshop type' field
+                const workshopTypeMapping = {
+                    technical_workshop: "Technical Workshop",
+                    non_technical_workshop: "Non-Technical Workshop"
+                };
+                const selectedWorkshopType = Object.entries(workshopTypeMapping)
+                    .filter(([key]) => workshopFormData[key])
+                    .map(([, value]) => value)
+                    .join(', ');
+
+                if (selectedWorkshopType) {
+                    formDataHTML += `
+            <tr>
+                <td>Workshop Type</td>
+                <td>${selectedWorkshopType}</td>
+            </tr>
+        `;
+                }
+
+                // Add the rest of the fields
+                Object.entries(workshopFormData).forEach(([key, value]) => {
+                    if (key !== 'day_1' && key !== 'day_2' && key !== 'day_3' && key !== 'two_days' && key !== 'technical_workshop' && key !== 'non_technical_workshop' && value) {
+                        formDataHTML += `
+            <tr>
+                <td>${formatKey(key)}</td>
+                <td>${value}</td>
+            </tr>
+        `;
+                    }
+                });
+                formDataHTML += `
+            </tbody>
+        </table>
+    `;
+                workshopFormDataContainer.innerHTML = formDataHTML;
+            } else {
+                document.getElementById('workshopFormData').innerHTML = '<p>No form data found.</p>';
+            }
+        }
+
+
+        window.onload = loadPreviewData;
+
+        function submitWorkshopData() {
+            const workshopDetails = JSON.parse(localStorage.getItem('workshopDetails'));
+            const workshopData = JSON.parse(localStorage.getItem('workshopData'));
+            const workshopItems = JSON.parse(localStorage.getItem('workshopItems'));
+            const workshopFormData = JSON.parse(localStorage.getItem('workshopFormData'));
+            const association_name = localStorage.getItem('association_name');
+            const workshop_name = localStorage.getItem('workshop_name');
+
+            if (workshopDetails && workshopData && workshopItems && workshopFormData && association_name && workshop_name) {
+                const allWorkshopData = {
+                    association_name,
+                    workshop_name,
+                    workshopDetails,
+                    workshopData,
+                    workshopItems,
+                    workshopFormData
+                };
+
+                fetch('/submit_ws_event', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allWorkshopData),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            window.location.href = '/confirm_ws';
+                        } else {
+                            alert('Error submitting event data: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error submitting event data:', error);
+                        alert('Failed to submit event data.');
+                    });
+            } else {
+                alert('No event data to submit.');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Workshop Preview Page</h1>
+    <div id="associationName"></div>
+    <div id="workshopName"></div>
+    <div id="workshopDetails"></div>
+    <div id="workshopData"></div>
+    <div id="workshopItems"></div>
+    <div id="workshopFormData"></div>
+    <button onclick="submitWorkshopData()">Submit</button>
+</body>
+
+</html>

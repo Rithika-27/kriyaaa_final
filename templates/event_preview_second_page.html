@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 190mm;
+            /* Set width to fit A4 */
+            margin: 10mm auto;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 10px;
+            /* Reduce font size */
+            line-height: 1.3;
+            page-break-before: always;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 14px;
+            /* Reduce header size */
+        }
+
+        hr {
+            margin: 10px 0;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+
+        .section {
+            margin-bottom: 12px;
+            /* Reduced margin for spacing */
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 12px;
+            /* Adjusted label size */
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 5px 0;
+        }
+
+        .circle {
+            display: inline-block;
+            width: 12px;
+            /* Smaller circle size */
+            height: 12px;
+            border: 1px solid #000;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 8px;
+            background-color: transparent;
+        }
+
+        .circle.checked {
+            background-color: #000;
+        }
+
+        .signature {
+            margin-top: 20px;
+            /* Reduced margin for signatures */
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .signature div {
+            margin-right: 15px;
+            border-top: 1px solid #000;
+            width: 180px;
+            /* Reduced width of signature section */
+            text-align: center;
+        }
+
+        .section p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Event Details: {{ event_id }}</h1>
+        <hr>
+
+        <!-- Days Section -->
+        <div class="section">
+            <label>Days:</label>
+            <div class="checkbox-group">
+                <div>
+                    <input type="checkbox" {{ "checked" if "Day 1" in event_details.days else "" }} disabled>
+                    <label>Day 1</label>
+                </div>
+                <div>
+                    <input type="checkbox" {{ "checked" if "Day 2" in event_details.days else "" }} disabled>
+                    <label>Day 2</label>
+                </div>
+                <div>
+                    <input type="checkbox" {{ "checked" if "Both Days" in event_details.days else "" }} disabled>
+                    <label>Both Days</label>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Expected Participants -->
+        <div class="section">
+            <label>Expected Number of Participants:</label>
+            <p>{{ event_details.participants }}</p>
+        </div>
+        <hr>
+
+        <!-- Team Size -->
+        <div class="section">
+            <label>Team Size:</label>
+            <p>Min: {{ event_details.min_team_size }}, Max: {{ event_details.max_team_size }}</p>
+        </div>
+        <hr>
+
+        <!-- Halls Section -->
+        <div class="section">
+            <label>Number of Halls/Labs Required:</label>
+            <p>{{ event_details.halls_required }}</p>
+        </div>
+        <div class="section">
+            <label>Reason for Multiple Halls:</label>
+            <p>{{ event_details.halls_reason }}</p>
+        </div>
+        <hr>
+
+        <div class="section">
+            <label>Halls/Labs Preferred:</label>
+            <p>{{ event_details.preferred_halls }}</p>
+        </div>
+        <hr>
+
+        <!-- Duration Section -->
+        <div class="section">
+            <label>Duration of the Event:</label>
+            <div>
+                <div>
+                    <span
+                        class="circle {{ 'checked' if event_details.duration == 'Slot 1: 9:30 to 12:30' else '' }}"></span>
+                    Slot 1: 9:30 to 12:30
+                </div>
+                <div>
+                    <span
+                        class="circle {{ 'checked' if event_details.duration == 'Slot 2: 1:30 to 4:30' else '' }}"></span>
+                    Slot 2: 1:30 to 4:30
+                </div>
+                <div>
+                    <span class="circle {{ 'checked' if event_details.duration == 'Full Day' else '' }}"></span>
+                    Full Day
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Extension Box -->
+        <div class="section">
+            <label>Extension Box:</label>
+            <p>{{ 'Yes' if event_details.extension_box else 'No' }}</p>
+        </div>
+        <hr>
+
+        <!-- Signatures -->
+        <div class="signature">
+            <div>Signature of the Secretary</div>
+            <div>Signature of the Faculty Advisor</div>
+        </div>
+    </div>
+</body>
+
+</html>

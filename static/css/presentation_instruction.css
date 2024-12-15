@@ -1,0 +1,219 @@
+/* General styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F4F4F4;
+    /* Light gray background */
+    color: #333;
+    /* Dark text */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='18' viewBox='0 0 100 18'%3E%3Cpath fill='%23d2a62b' fill-opacity='0.06' d='M61.82 18c3.47-1.45 6.86-3.78 11.3-7.34C78 6.76 80.34 5.1 83.87 3.42 88.56 1.16 93.75 0 100 0v6.16C98.76 6.05 97.43 6 96 6c-9.59 0-14.23 2.23-23.13 9.34-1.28 1.03-2.39 1.9-3.4 2.66h-7.65zm-23.64 0H22.52c-1-.76-2.1-1.63-3.4-2.66C11.57 9.3 7.08 6.78 0 6.16V0c6.25 0 11.44 1.16 16.14 3.42 3.53 1.7 5.87 3.35 10.73 7.24 4.45 3.56 7.84 5.9 11.31 7.34zM61.82 0h7.66a39.57 39.57 0 0 1-7.34 4.58C57.44 6.84 52.25 8 46 8S34.56 6.84 29.86 4.58A39.57 39.57 0 0 1 22.52 0h15.66C41.65 1.44 45.21 2 50 2c4.8 0 8.35-.56 11.82-2z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Container styling */
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #FFFFFF;
+    /* White background */
+    border: 1px solid #E1E1E1;
+    /* Softer gray border */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
+    /* Softer shadow */
+    position: relative;
+}
+
+/* Header styling */
+h1 {
+    text-align: center;
+    font-size: 36px;
+    /* Larger font size */
+    color: #2E2E2E;
+    /* Slightly darker text */
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* Important note section */
+.note {
+    background-color: #E9F7EC;
+    /* Softer light green background (#d4f4dd) */
+    border-left: 6px solid #A6D85E;
+    /* Warm green accent */
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    font-size: 18px;
+    border-radius: 8px;
+    /* Slightly rounded corners */
+    box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);
+    /* Softer shadow */
+    font-weight: 500;
+    position: relative;
+}
+
+/* Important note highlight */
+.note .important {
+    font-weight: 700;
+    color: #A6D85E;
+    /* Green accent */
+    font-size: 18px;
+    background-color: transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+/* Instructions section layout */
+.instructions-list {
+    margin-bottom: 30px;
+}
+
+.instructions-list h3 {
+    font-size: 26px;
+    /* Slightly larger font size */
+    color: #2E2E2E;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.instructions-list .instructions-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #555;
+}
+
+.instructions-list .instructions-item::before {
+    content: "•";
+    color: #A6D85E;
+    /* Green accent */
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+/* Instruction text alignment */
+.instructions-list .instructions-item p {
+    margin: 0;
+}
+
+/* Roman numerals */
+.instructions-list .instructions-item span {
+    font-weight: 700;
+    color: #A6D85E;
+    /* Green accent */
+    margin-right: 10px;
+}
+
+/* Agreement Section */
+.agree-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.agree-checkbox {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Proceed Button section styling */
+.proceed-button-section {
+    padding-top: 50px;
+    margin-top: -15px;
+    /* Adjust spacing between checkbox and button */
+    text-align: center;
+}
+
+.next-button {
+    background-color: #A6D85E;
+    /* Green accent */
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    font-size: 18px;
+    /* Larger text size */
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.next-button:hover {
+    background-color: #8DBF50;
+    /* Darker green on hover */
+}
+
+.next-button:disabled {
+    background-color: #E9F7EC;
+    cursor: not-allowed;
+}
+
+/* Footer styling */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 14px;
+    color: #7F7F7F;
+}
+
+/* List Marker Styling */
+.instructions-list li::marker {
+    color: #A6D85E;
+    /* Green accent for markers */
+    font-size: 18px;
+}
+
+/* Link styling */
+a {
+    color: #A6D85E;
+    /* Green accent */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #8DBF50;
+    /* Darker green on hover */
+}
+
+/* Modify the important box to make it visually appealing */
+.important-box {
+    background-color: #E9F7EC;
+    /* Softer light green background */
+    border: 1px solid #A6D85E;
+    /* Green border */
+    border-radius: 8px;
+    padding: 15px 20px;
+    /* Reduce padding for a more compact look */
+    margin-bottom: 20px;
+    font-size: 16px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    width: 90%;
+    /* Reduce width to make it more compact */
+    max-width: 700px;
+    /* Set max width to avoid overly large boxes */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.important-box p {
+    margin: 0;
+    color: #333;
+}
+
+.important-box .important {
+    color: #A6D85E;
+    /* Green highlight for important text */
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 700;
+    background-color: transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+}

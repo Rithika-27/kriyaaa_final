@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/workshop.css') }}">
+    <title>Workshop Details Form</title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const numericInputs = document.querySelectorAll('input[type="number"]');
+            const twoDaysRadio = document.querySelector('input[value="two_days"]');
+            const twoDaysField = document.querySelector('input[name="two_days"]');
+            const hallsField = document.querySelector('input[name="halls_required"]');
+            const hallsReasonField = document.querySelector('input[name="hall_reason"]');
+            const preferredHallsField = document.querySelector('input[name="preferred_halls"]');
+            const preferredHallsReasonField = document.querySelector('input[name="preferred_hall_reason"]');
+            const proposingFeeInput = document.querySelector('input[name="proposing_fee"]');
+            const proposingFeeJustificationTextarea = document.querySelector('textarea[name="proposing_fees_justification"]');
+            const speakerRemunerationInput = document.querySelector('input[name="speaker_remuneration"]');
+            const speakerJustificationTextarea = document.querySelector('textarea[name="speaker_remuneration_justification"]');
+
+            // Disable justification box initially
+            speakerJustificationTextarea.disabled = true;
+
+            // Enable justification box if remuneration > 0
+            speakerRemunerationInput.addEventListener('input', () => {
+                if (parseInt(speakerRemunerationInput.value) > 0) {
+                    speakerJustificationTextarea.disabled = false;
+                } else {
+                    speakerJustificationTextarea.disabled = true;
+                    speakerJustificationTextarea.value = ''; // Clear justification field if disabled
+                }
+            });
+
+            const validateProposingFee = () => {
+                const feeValue = parseFloat(proposingFeeInput.value.trim());
+                if (isNaN(feeValue)) {
+                    alert("Proposing Fee must be a number.");
+                    return false;
+                }
+                if (feeValue < 300) {
+                    alert("Proposing Fee cannot be less than Rs. 300.");
+                    return false;
+                }
+                if (feeValue > 1000) {
+                    alert("Proposing Fee cannot exceed Rs. 1000.");
+                    return false;
+                }
+                return true;
+            };
+
+            // Enable/disable reason fields for halls and preferred halls
+            const updateReasonFields = () => {
+                hallsReasonField.disabled = !(hallsField.value > 1);
+                //preferredHallsReasonField.disabled = !(preferredHallsField.value > 1);
+            };
+
+            hallsField.addEventListener('input', updateReasonFields);
+            //preferredHallsField.addEventListener('input', updateReasonFields);
+
+            // Prevent negative numbers in numeric inputs
+            numericInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.value < 0) {
+                        input.value = '';
+                        alert('Negative values are not allowed.');
+                    }
+                });
+            });
+
+            // Form submission handler
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Validate the Proposing Fee
+                if (!validateProposingFee()) {
+                    return;
+                }
+
+                // Save data
+                const formData = {};
+                const inputs = document.querySelectorAll('input[name]');
+                const textareas = document.querySelectorAll('textarea[name]');
+                inputs.forEach(input => {
+                    if (input.type === 'radio') {
+                        if (input.checked) formData[input.name] = input.value;
+                    } else if (input.type === 'checkbox') {
+                        formData[input.name] = input.checked;
+                    } else {
+                        formData[input.name] = input.value.trim();
+                    }
+                });
+                textareas.forEach(textarea => {
+                    formData[textarea.name] = textarea.value.trim();
+                });
+
+                localStorage.setItem('workshopFormData', JSON.stringify(formData));
+                alert('Form submitted successfully!');
+                window.location.href = './items_ws'; // Redirect to the items page after form submission
+            });
+
+            // Load saved data from localStorage
+            const storedData = JSON.parse(localStorage.getItem('workshopFormData'));
+            if (storedData) {
+                Object.keys(storedData).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            element.checked = storedData[key];
+                        } else {
+                            element.value = storedData[key];
+                        }
+                    }
+                });
+                if (parseInt(storedData['speaker_remuneration'], 10) > 0) {
+                    speakerJustificationTextarea.disabled = false;
+                }
+
+                updateReasonFields();
+                validateProposingFee();
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Workshop Details Form</h1>
+        <form>
+            <table>
+                <!-- Day Selection -->
+                <tr>
+                    <th>Day 2</th>
+                    <th>Day 3</th>
+                    <th>Both Days</th>
+
+                </tr>
+                <tr>
+                    <td><input type="radio" name="day" value="day_2"></td>
+                    <td><input type="radio" name="day" value="day_3"></td>
+                    <td><input type="radio" name="day" value="both_days"></td>
+                    <!-- <td><input type="radio" name="day" value="two_days"></td>
+                    <td><input type="text" name="two_days" placeholder="Enter days (e.g., Day 1, Day 2)" disabled></td> -->
+                </tr>
+
+                <!-- Workshop Type -->
+                <!-- <tr>
+                    <th colspan="5">Workshop Type</th>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <label><input type="radio" name="workshop_type" value="technical"> Technical Workshop</label>
+                        <label><input type="radio" name="workshop_type" value="non_technical"> Non-Technical
+                            Workshop</label>
+                    </td>
+                </tr> -->
+
+                <!-- Rounds and Participants -->
+                <!-- <tr>
+                    <th colspan="5">No. of Rounds</th>
+                </tr>
+                <tr>
+                    <td colspan="5"><input type="number" name="rounds" placeholder="Enter number of rounds" min="1">
+                    </td>
+                </tr> -->
+                <tr>
+                    <th colspan="5">Expected No. of Participants</th>
+                </tr>
+                <tr>
+                    <td colspan="5"><input type="number" name="participants" placeholder="Enter number of participants"
+                            min="1"></td>
+                </tr>
+                <tr>
+                    <th colspan="5">Proposing Fees(MIN:Rs.300 MAX:Rs.1000)</th>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <input type="number" name="proposing_fee" placeholder="Enter proposing fee" min="0">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <textarea name="proposing_fees_justification"
+                            placeholder="Enter justification for proposing fees" rows="3"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="5">Speaker Remuneration (if any)</th>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <input type="number" name="speaker_remuneration" placeholder="Enter speaker remuneration"
+                            min="0">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <textarea name="speaker_remuneration_justification"
+                            placeholder="Enter justification for speaker remuneration" rows="3"></textarea>
+                    </td>
+                </tr>
+
+
+                <!-- Workshop Duration -->
+                <tr>
+                    <th colspan="5">Duration of the Workshop</th>
+                </tr>
+                <tr>
+                    <td colspan="5"><input type="text" name="duration" placeholder="Specify duration"></td>
+                </tr>
+
+                <!-- Participant Type -->
+                <!-- <tr>
+                    <th>Workshop Type</th>
+                    <th>Individual</th>
+                    <th colspan="2">Team (Min-Max)</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="radio" name="participant_type" value="individual"></td>
+                    <td colspan="2">
+                        <label><input type="radio" name="participant_type" value="team"> Team</label>
+                        <label>Min: <input type="number" name="team_min" placeholder="Min" disabled></label>
+                        <label>Max: <input type="number" name="team_max" placeholder="Max" disabled></label>
+                    </td>
+                </tr> -->
+
+                <!-- Halls -->
+                <tr>
+                    <th>Halls Required</th>
+                    <th colspan="4"><input type="number" name="halls_required" placeholder="Specify halls required">
+                    </th>
+                </tr>
+                <tr>
+                    <th>Reason for Halls</th>
+                    <th colspan="4"><input type="text" name="hall_reason" placeholder="Specify reason for halls"
+                            disabled></textarea></th>
+                </tr>
+                <tr>
+                    <th>Preferred Halls</th>
+                    <th colspan="4"><input type="text" name="preferred_halls" placeholder="Specify preferred halls">
+                    </th>
+                </tr>
+                <tr>
+                    <th>Reason for Preferred Halls</th>
+                    <th colspan="4"><input type="text" name="preferred_hall_reason"
+                            placeholder="Specify reason for preferred halls"></textarea></th>
+                </tr>
+
+                <!-- Slot -->
+                <tr>
+                    <th colspan="5">Slot</th>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="slot" value="slot1"> Slot 1 (9:30 to 12:30)</td>
+                    <td><input type="radio" name="slot" value="slot2"> Slot 2 (1:30 to 4:30)</td>
+                    <td colspan="3"><input type="radio" name="slot" value="full_day"> Full Day</td>
+                </tr>
+
+                <!-- Extension Boxes -->
+                <tr>
+                    <th colspan="5">Extension Box</th>
+                </tr>
+                <tr>
+                    <td colspan="5"><input type="number" name="extension_boxes" placeholder="Enter number of boxes">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Reason for Extension Boxes</th>
+                    <th colspan="4"><input type="text" name="extension_reason"
+                            placeholder="Specify reason for extension boxes"></textarea></th>
+                </tr>
+
+                <!-- Submit Button -->
+                <tr>
+                    <td colspan="5"><button type="submit">Save Workshop Details</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+
+</html>

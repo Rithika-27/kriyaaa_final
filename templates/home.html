@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Bar with Cards</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header class="page-header">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/psg.png') }}" alt="PSG Logo">
+      </div>
+      <div class="kriya-logo">
+        <img src="{{ url_for('static', filename='images/kriya.png') }}" alt="Kriya Logo">
+      </div>
+    </header>
+
+    <!-- Search Bar Section -->
+    <!-- Search Bar Section -->
+    <section class="search-section">
+      <form method="GET" action="{{ url_for('search_event') }}" class="search-form">
+        <div class="search-bar-container">
+          <input type="text" name="id" class="search-bar" placeholder="search here..." required>
+          <button type="submit" class="search-button">Search</button>
+          <a href="/login" class="login-button">Login</a>
+        </div>
+      </form>
+    </section>
+
+
+    <!-- Main Cards Section -->
+    <main>
+      <div class="cards-container">
+        <!-- Link to the Event Page -->
+        <div class="card-container">
+          <a href="/event-info" class="card-link">
+            <div class="card event-card">
+              <h3>Event</h3>
+            </div>
+          </a>
+        </div>
+
+        <!-- Link to the Presentation Page -->
+        <div class="card-container">
+          <a href="/presentation-info" class="card-link">
+            <div class="card presentation-card">
+              <h3>Presentation</h3>
+            </div>
+          </a>
+        </div>
+
+        <!-- Link to the Workshops Page -->
+        <div class="card-container">
+          <a href="/workshop-info" class="card-link">
+            <div class="card workshops-card">
+              <h3>Workshops</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="page-footer">
+      <p>&copy; Powered by Students Union</p>
+    </footer>
+  </div>
+</body>
+
+</html>

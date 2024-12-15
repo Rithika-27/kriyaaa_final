@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/workshop_form.css') }}">
+</head>
+
+<body>
+    <h1>Enter Workshop Details</h1>
+    <form id="workshop-form">
+        <!-- Workshop Details -->
+        <label for="workshop_name">Workshop Name:</label>
+        <input type="text" id="workshop_name" name="workshop_name" required><br><br>
+
+        <label for="workshop_description">Workshop Description:</label>
+        <textarea id="workshop_description" name="workshop_description" required></textarea><br><br>
+
+        <label for="workshop_prerequisites">Workshop Prerequisites:</label>
+        <textarea id="workshop_prerequisites" name="workshop_prerequisites" required></textarea><br><br>
+
+        <!-- Number of Sessions -->
+        <label for="session_count">Number of Sessions:</label>
+        <input type="number" id="session_count" name="session_count" min="1" required><br><br>
+
+        <div id="sessions">
+            <!-- Dynamic session fields will be added here based on the number of sessions -->
+        </div>
+
+        <button type="submit">Submit Workshop</button>
+    </form>
+
+    <script>
+        // Add dynamic session fields based on session count
+        document.getElementById('session_count').addEventListener('input', function () {
+            const sessionsContainer = document.getElementById('sessions');
+            sessionsContainer.innerHTML = ''; // Clear previous fields
+            const sessionCount = parseInt(this.value);
+            for (let i = 0; i < sessionCount; i++) {
+                const sessionHTML = `
+                    
+
+                    <label for="session_time_${i}">Session Time:</label>
+                    <input type="text" id="session_time_${i}" name="session_time_${i}" required><br><br>
+
+                    <label for="session_topic_${i}">Session Topic:</label>
+                    <input type="text" id="session_topic_${i}" name="session_topic_${i}" required><br><br>
+
+                    <label for="session_description_${i}">Session Description:</label>
+                    <textarea id="session_description_${i}" name="session_description_${i}" required></textarea><br><br>
+                `;
+                sessionsContainer.innerHTML += sessionHTML;
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('workshop-form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Gather workshop data
+            const workshopData = {
+                name: document.getElementById('workshop_name').value,
+                description: document.getElementById('workshop_description').value,
+                prerequisites: document.getElementById('workshop_prerequisites').value,
+                session_count: document.getElementById('session_count').value,
+                sessions: []
+            };
+
+            const sessionCount = parseInt(workshopData.session_count);
+            for (let i = 0; i < sessionCount; i++) {
+                workshopData.sessions.push({
+
+                    session_time: document.getElementById(`session_time_${i}`).value,
+                    session_topic: document.getElementById(`session_topic_${i}`).value,
+                    session_description: document.getElementById(`session_description_${i}`).value
+                });
+            }
+
+            // Store data in localStorage
+            localStorage.setItem('workshopData', JSON.stringify(workshopData));
+
+            // Redirect to preview page (or any page for review)
+            window.location.href = './preview_ws';
+        });
+
+        // Load saved data on page load (for editing or review)
+        window.onload = function () {
+            const storedWorkshopData = localStorage.getItem('workshopData');
+            if (storedWorkshopData) {
+                const workshopData = JSON.parse(storedWorkshopData);
+                document.getElementById('workshop_name').value = workshopData.name;
+                document.getElementById('workshop_description').value = workshopData.description;
+                document.getElementById('workshop_prerequisites').value = workshopData.prerequisites;
+                document.getElementById('session_count').value = workshopData.session_count;
+
+                const sessionsContainer = document.getElementById('sessions');
+                const sessionCount = parseInt(workshopData.session_count);
+                for (let i = 0; i < sessionCount; i++) {
+                    const sessionHTML = `
+                        <h3>Session ${i + 1}</h3>
+                        
+
+                        <label for="session_time_${i}">Session Time:</label>
+                        <input type="text" id="session_time_${i}" name="session_time_${i}" value="${workshopData.sessions[i].session_time}" required><br><br>
+
+                        <label for="session_topic_${i}">Session Topic:</label>
+                        <input type="text" id="session_topic_${i}" name="session_topic_${i}" value="${workshopData.sessions[i].session_topic}" required><br><br>
+
+                        <label for="session_description_${i}">Session Description:</label>
+                        <textarea id="session_description_${i}" name="session_description_${i}" required>${workshopData.sessions[i].session_description}</textarea><br><br>
+                    `;
+                    sessionsContainer.innerHTML += sessionHTML;
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

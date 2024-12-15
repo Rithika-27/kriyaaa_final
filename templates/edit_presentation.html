@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Presentation Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
+</head>
+
+<body>
+    <h1>Presentation Details</h1>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    <a href="/presentation_search">Back to Search</a>
+    {% elif presentation %}
+    <form action="/save_presentation" method="POST">
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+
+            <!-- Association and Presentation Details -->
+            <tr>
+                <td><strong>Association Name</strong></td>
+                <td><input type="text" name="association_name"
+                        value="{{ presentation.association_name if presentation.association_name else '' }}"></td>
+            </tr>
+            <tr>
+                <td><strong>Presentation Name</strong></td>
+                <td><input type="text" name="presentation_name"
+                        value="{{ presentation.presentation_name if presentation.presentation_name else '' }}"></td>
+            </tr>
+            <tr>
+                <td><strong>Event ID</strong></td>
+                <td><input type="text" name="presentation_id" value="{{ presentation.presentation_id }}" readonly></td>
+
+            </tr>
+
+            <!-- Details Section -->
+            <tr>
+                <td><strong>Details</strong></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        {% for key, value in presentation.details.items() %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td><input type="text" name="details[{{ key }}]" value="{{ value }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Presentation Information -->
+            <tr>
+                <td><strong>Event Description</strong></td>
+                <td><textarea name="event_description">{{ presentation.presentation.event_description }}</textarea></td>
+            </tr>
+            <tr>
+                <td><strong>Topics and Theme</strong></td>
+                <td><textarea name="topics_and_theme">{{ presentation.presentation.topics_and_theme }}</textarea></td>
+            </tr>
+            <tr>
+                <td><strong>Event Rules</strong></td>
+                <td><textarea name="event_rules">{{ presentation.presentation.event_rules }}</textarea></td>
+            </tr>
+
+            <!-- Form Details -->
+            <tr>
+                <td><strong>Form</strong><br>(SLOT:Type in the same format<br> e.g., slot1, slot2,
+                    full_day)<br></br>(DAYS:Type
+                    in the
+                    same format<br>
+                    e.g., day_1, day_2, day_3, two_days)</td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+
+                        <!-- Specific Day Field -->
+                        {% set dayMapping = {'day_1': 'Day 1', 'day_2': 'Day 2', 'day_3': 'Day 3', 'two_days': 'Two
+                        Days'} %}
+                        {% set selectedDay = dayMapping.get(presentation.form.day, 'N/A') %}
+                        <tr>
+                            <td>Day</td>
+                            <td>
+                                <select name="form[day]">
+                                    <option value="day_1" {% if selectedDay=='Day 1' %}selected{% endif %}>Day 1
+                                    </option>
+                                    <option value="day_2" {% if selectedDay=='Day 2' %}selected{% endif %}>Day 2
+                                    </option>
+                                    <option value="day_3" {% if selectedDay=='Day 3' %}selected{% endif %}>Day 3
+                                    </option>
+                                    <option value="two_days" {% if selectedDay=='Two Days' %}selected{% endif %}>Two
+                                        Days</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <!-- Additional Form Fields -->
+                        {% for key, value in presentation.form.items() %}
+                        {% if key != 'day' %}
+                        <tr>
+                            <td>{{ key.replace('_', ' ') | title }}</td>
+                            <td><input type="text" name="form[{{ key }}]" value="{{ value }}"></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Submit Button -->
+        <button type="submit" class="button">Save Changes</button>
+    </form>
+    {% else %}
+    <p>No event found.</p>
+
+    {% endif %}
+</body>
+
+</html>

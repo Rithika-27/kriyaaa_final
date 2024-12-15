@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
+    <title>Preview Page</title>
+    <script>
+        // Function to load the event data from localStorage and display it
+        function loadPreviewData() {
+            // Retrieve event details, event data, items, and event summary from localStorage
+            const eventDetails = JSON.parse(localStorage.getItem('eventDetails'));
+            const eventData = JSON.parse(localStorage.getItem('eventData'));
+            const eventItems = JSON.parse(localStorage.getItem('items'));
+            const eventFormData = JSON.parse(localStorage.getItem('eventFormData'));
+
+            // Check and display event details
+            if (eventDetails) {
+                const eventDetailsContainer = document.getElementById('eventDetails');
+                let eventDetailsHTML = `
+                    <h2>Event Details:</h2>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                Object.entries(eventDetails).forEach(([key, value]) => {
+                    eventDetailsHTML += `
+                        <tr>
+                            <td>${key}</td>
+                            <td>${value}</td>
+                        </tr>
+                    `;
+                });
+                eventDetailsHTML += `
+                        </tbody>
+                    </table>
+                `;
+                eventDetailsContainer.innerHTML = eventDetailsHTML;
+            } else {
+                document.getElementById('eventDetails').innerHTML = '<p>No event details found.</p>';
+            }
+
+            // Check and display event data
+            if (eventData) {
+                const eventDataContainer = document.getElementById('eventData');
+                let eventDataHTML = `
+                    <h2>Event Data:</h2>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                Object.entries(eventData).forEach(([key, value]) => {
+                    eventDataHTML += `
+                        <tr>
+                            <td>${key}</td>
+                            <td>${value}</td>
+                        </tr>
+                    `;
+                });
+                eventDataHTML += `
+                        </tbody>
+                    </table>
+                `;
+                eventDataContainer.innerHTML = eventDataHTML;
+            } else {
+                document.getElementById('eventData').innerHTML = '<p>No event data found.</p>';
+            }
+
+            // Check and display event items in a table
+            if (eventItems) {
+                const eventItemsContainer = document.getElementById('eventItems');
+                let itemsTableHTML = `
+                    <h2>Event Items:</h2>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>S.NO.</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price per Unit</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                eventItems.forEach(item => {
+                    itemsTableHTML += `
+                        <tr>
+                            <td>${item.sno}</td>
+                            <td>${item.item_name}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.price_per_unit}</td>
+                            <td>${item.total_price}</td>
+                        </tr>
+                    `;
+                });
+                itemsTableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                eventItemsContainer.innerHTML = itemsTableHTML;
+            } else {
+                document.getElementById('eventItems').innerHTML = '<p>No event items found.</p>';
+            }
+
+            // Display eventFormData
+            if (eventFormData) {
+                const eventFormDataContainer = document.getElementById('eventFormData');
+                let formDataHTML = `
+                    <h2>Event Form Data:</h2>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                Object.entries(eventFormData).forEach(([key, value]) => {
+                    formDataHTML += `
+                        <tr>
+                            <td>${key}</td>
+                            <td>${value}</td>
+                        </tr>
+                    `;
+                });
+                formDataHTML += `
+                        </tbody>
+                    </table>
+                `;
+                eventFormDataContainer.innerHTML = formDataHTML;
+            } else {
+                document.getElementById('eventFormData').innerHTML = '<p>No form data found.</p>';
+            }
+        }
+
+        // Call the function to load the preview data when the page loads
+        window.onload = loadPreviewData;
+
+        // Function to submit the event data to the backend
+        function submitEventData() {
+            const eventDetails = JSON.parse(localStorage.getItem('eventDetails'));
+            const eventData = JSON.parse(localStorage.getItem('eventData'));
+            const eventItems = JSON.parse(localStorage.getItem('items'));
+            const eventFormData = JSON.parse(localStorage.getItem('eventFormData'));
+
+            if (eventDetails && eventData && eventItems && eventFormData) {
+                const allEventData = { eventDetails, eventData, eventItems, eventFormData };
+
+                // Simulate submitting the data (sending it to the backend)
+                fetch('/submit_event', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allEventData),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            window.location.href = '/confirm';
+                        } else {
+                            alert('Error submitting event data: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error submitting event data:', error);
+                        alert('Failed to submit event data.');
+                    });
+            } else {
+                alert('No event data to submit.');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Event Preview</h1>
+
+        <!-- Event Details Section -->
+        <div id="eventDetails"></div>
+
+        <!-- Event Data Section -->
+        <div id="eventData"></div>
+
+        <!-- Event Items Section -->
+        <div id="eventItems"></div>
+
+        <!-- Event Form Data Section -->
+        <div id="eventFormData"></div>
+
+        <!-- Submit Button -->
+        <button onclick="submitEventData()">Submit</button>
+    </div>
+</body>
+
+</html>
